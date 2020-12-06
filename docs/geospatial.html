@@ -333,18 +333,12 @@ $(document).ready(function () {
 <div id="import-packages" class="section level1">
 <h1>Import Packages</h1>
 <pre class="r"><code>library(ggplot2)
-library(tidyverse)</code></pre>
-<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(gridExtra)</code></pre>
-<pre><code>## Warning: package &#39;gridExtra&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(readxl)</code></pre>
-<pre><code>## Warning: package &#39;readxl&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(sf)</code></pre>
-<pre><code>## Warning: package &#39;sf&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(spData)</code></pre>
-<pre><code>## Warning: package &#39;spData&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(maps)</code></pre>
-<pre><code>## Warning: package &#39;maps&#39; was built under R version 4.0.3</code></pre>
+library(tidyverse)
+library(gridExtra)
+library(readxl)
+library(sf)
+library(spData)
+library(maps)</code></pre>
 </div>
 <div id="task-1-python" class="section level1">
 <h1>Task 1 (Python)</h1>
@@ -410,12 +404,17 @@ countypres$FIPS = as.character(countypres$FIPS)
 countypres$FIPS = ifelse(nchar(countypres$FIPS)==5, countypres$FIPS, paste(&#39;0&#39;, countypres$FIPS, sep = &#39;&#39;))
 countypres$vote_proportion = countypres$candidatevotes/countypres$totalvotes
 # unemploymen
-unemployment = unemployment %&gt;% rename(FIPS=FIPStxt) %&gt;% select(-c(&#39;area_name&#39;,&#39;Rural_urban_continuum_code_2013&#39;,&#39;Urban_influence_code_2013&#39;, &#39;Metro_2013&#39;)) %&gt;% gather(key = &#39;key&#39;, value = &#39;value&#39;, -FIPS, -Stabr)
+unemployment = unemployment %&gt;%dplyr::rename(FIPS=FIPStxt) %&gt;% select(-c(&#39;area_name&#39;,&#39;Rural_urban_continuum_code_2013&#39;,&#39;Urban_influence_code_2013&#39;, &#39;Metro_2013&#39;)) %&gt;% gather(key = &#39;key&#39;, value = &#39;value&#39;, -FIPS, -Stabr)
 unemployment$year = unemployment$key %&gt;% str_extract(.,&#39;\\d+&#39;)
 unemployment$key = unemployment$key %&gt;% str_extract(.,&#39;\\D+&#39;) %&gt;% str_remove(.,&#39;_$&#39;)
 unemployment = unemployment %&gt;% spread(key, value) %&gt;% filter(year %in% c(&#39;2008&#39;, &#39;2012&#39;, &#39;2016&#39;)) %&gt;% select(-c(&#39;Med_HH_Income_Percent_of_State_Total&#39;, &#39;Median_Household_Income&#39;))
 # map data
 states = st_as_sf(maps::map(&#39;state&#39;, plot = F, fill = T)) %&gt;% cbind(st_coordinates(st_centroid(.))) %&gt;% mutate(ID = str_to_title(ID))</code></pre>
+<pre><code>## Warning in st_centroid.sf(.): st_centroid assumes attributes are constant over
+## geometries of x</code></pre>
+<pre><code>## Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+## of_largest_polygon): st_centroid does not give correct centroids for longitude/
+## latitude data</code></pre>
 <div id="data-view" class="section level3">
 <h3>data view</h3>
 <pre class="r"><code>countypres</code></pre>

@@ -300,6 +300,12 @@ $(document).ready(function () {
   <a href="Assignment3.html">Assignment 3 Hand-draw</a>
 </li>
 <li>
+  <a href="Assignment4.html">Assignment 4 Bank Processing</a>
+</li>
+<li>
+  <a href="Assignment5.html">Assignment 5 Bank Analysis</a>
+</li>
+<li>
   <a href="geospatial.html">Assignment 6 Geospatial</a>
 </li>
 <li>
@@ -334,7 +340,7 @@ data=readxl::read_xls(&#39;data/State_to_State_Migrations_Table_2018.xls&#39;, s
 <div id="extract-the-data-in-the-form-of-a-data-frame-with-3-columns-source-target-and-count-the-last-column-will-contain-the-numbers-of-people-who-migrated-from-the-source-state-to-the-target-state-in-2018" class="section level3">
 <h3>Extract the data in the form of a data frame with 3 columns: source, target and count; the last column will contain the numbers of people who migrated from the source state to the target state in 2018</h3>
 <pre class="r"><code># Set the target column
-data = rename(data, &#39;target&#39;=&#39;Current residence in...1&#39;)
+data = dplyr::rename(data, &#39;target&#39;=&#39;Current residence in...1&#39;)
 # remove no need columns
 data = select(data,-contains(&#39;Current residence in&#39;) )
 data = select(data,-seq(3,119,2) )

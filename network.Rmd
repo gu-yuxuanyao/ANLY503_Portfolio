@@ -20,7 +20,7 @@ data=readxl::read_xls('data/State_to_State_Migrations_Table_2018.xls', skip=4)
 ### Extract the data in the form of a data frame with 3 columns: source, target and count; the last column will contain the numbers of people who migrated from the source state to the target state in 2018
 ```{r message=FALSE, warning=FALSE}
 # Set the target column
-data = rename(data, 'target'='Current residence in...1')
+data = dplyr::rename(data, 'target'='Current residence in...1')
 # remove no need columns
 data = select(data,-contains('Current residence in') )
 data = select(data,-seq(3,119,2) )
