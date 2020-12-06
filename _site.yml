@@ -3,12 +3,19 @@ output_dir: "docs"
 navbar:
   title: "Anly-503 Portfolio"
   left:
-    - text: "About"
+    - text: "Introduction"
       href: index.html
     - text: "Final Project"
       href: project.html
-    - text: "Assignment 7 Network"
-      href: network.html
+    - text: "Assignment 1 Conceptual Visualization"
+      href: Assignment1.html
+    - text: "Assignment 2 Suggestion"
+      href: Assignment2.html
+    - text: "Assignment 3 Hand-draw"
+      href: Assignment3.html
     - text: "Assignment 6 Geospatial"
       href: geospatial.html
+    - text: "Assignment 7 Network"
+      href: network.html
+
 
