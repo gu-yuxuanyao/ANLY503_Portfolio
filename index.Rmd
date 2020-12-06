@@ -1,10 +1,24 @@
 ---
-title: "About"
+title: "Introduction"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
 ---
+
+
+
+
+![](cover.jpg)
+
+
 
 Hello!
 
 This website is for the assignments and final project submission of Georgetown University ANLY-503 Analytical Data Visualization.
+
+Because of github's restrictions on the size of uploaded datasets, some datasets are not uploaded, including the final project's dataset.
 
 Name: Yuxuan Yao
 

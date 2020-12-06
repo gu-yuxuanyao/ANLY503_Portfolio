@@ -2,8 +2,13 @@
 title: "Final Project"
 author: "Yuxuan Yao"
 date: "2020/12/4"
-output: html_document
+output: 
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
 ---
+![](SF.png)
 **Dataset**:
 
 SF Bay Area Bike Share (https://www.kaggle.com/benhamner/sf-bay-area-bike-share)

@@ -2,7 +2,11 @@
 title: "geospatial"
 author: "Yuxuan Yao"
 date: "2020/10/22"
-output: html_document
+output: 
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
 ---
 # Import Packages
 ```{r message=FALSE,warning=FALSE}

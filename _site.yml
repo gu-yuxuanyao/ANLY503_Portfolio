@@ -21,5 +21,10 @@ navbar:
       href: geospatial.html
     - text: "Assignment 7 Network"
       href: network.html
-
+      
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
 

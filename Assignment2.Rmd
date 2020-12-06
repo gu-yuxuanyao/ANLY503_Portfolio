@@ -2,7 +2,11 @@
 title: "Assignment 2"
 author: "Yuxuan Yao"
 date: "2020/12/6"
-output: html_document
+output: 
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
 ---
 # Chart 9:
 

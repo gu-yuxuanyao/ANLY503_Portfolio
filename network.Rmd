@@ -2,7 +2,11 @@
 title: "networks"
 author: "Yuxuan Yao"
 date: "2020/11/8"
-output: html_document
+output: 
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
 ---
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
