@@ -8,7 +8,7 @@ navbar:
     - text: "Final Project"
       href: project.html
     - text: "Assignment 7 Network"
-      href: networks1.html
+      href: network.html
     - text: "Assignment 6 Geospatial"
       href: geospatial.html
 
