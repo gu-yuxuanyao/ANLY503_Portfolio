@@ -1,9 +1,14 @@
-name: "my-website"
+name: "anly503_portfolio"
 output_dir: "docs"
 navbar:
-  title: "My Website"
+  title: "Anly-503 Portfolio"
   left:
-    - text: "Home"
-      href: index.html
     - text: "About"
-      href: about.html
+      href: index.html
+    - text: "Final Project"
+      href: project.html
+    - text: "Assignment 7 Network"
+      href: networks1.html
+    - text: "Assignment 6 Geospatial"
+      href: geospatial.html
+

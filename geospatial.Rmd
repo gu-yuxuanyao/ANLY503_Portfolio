@@ -1,0 +1,169 @@
+---
+title: "geospatial"
+author: "Yuxuan Yao"
+date: "2020/10/22"
+output: html_document
+---
+# Import Packages
+```{r message=FALSE, warning=FALSE}
+library(reticulate)
+library(ggplot2)
+library(tidyverse)
+library(gridExtra)
+library(readxl)
+library(sf)
+library(spData)
+library(maps)
+```
+
+# Task 1 (Python)
+
+### import packages
+```{python}
+import numpy as np
+import pandas as pd
+import re
+```
+
+### read data
+```{python}
+countypres=pd.read_csv('data/countypres_2000-2016.csv')
+unemployment=pd.read_excel('data/Unemployment.xls', skiprows=7) # select rows
+```
+
+### Democratic or Republican
+```{python}
+countypres=countypres[countypres['year'].isin([2008,2012,2016]) & countypres['party'].isin(['republican','democrat'])]
+countypres['FIPS']=countypres['FIPS'].astype(str).apply(lambda x: re.sub('\.0','',x))
+```
+
+### functions
+```{python}
+def FIX_FIPS(x):
+  if len(x)==4:
+    return('0'+x)
+  else:
+    return x
+    
+def get_year(x):
+  return int(re.findall('\d+',x)[0])
+
+def remove_suffix(x):
+  return re.sub('_\d+','',x)
+```
+
+### processing
+```{python}
+countypres['FIPS']=countypres['FIPS'].apply(FIX_FIPS)
+countypres['vote_proportion']=countypres['candidatevotes']/countypres['totalvotes']
+
+# unemployment data tidy
+unemployment=unemployment.rename(columns={'FIPStxt':'FIPS'})
+unemployment=unemployment.drop(columns=['Median_Household_Income_2018','Med_HH_Income_Percent_of_State_Total_2018','area_name','Rural_urban_continuum_code_2013','Urban_influence_code_2013','Metro_2013'])
+unemployment=unemployment.melt(id_vars=['FIPS','Stabr'], var_name='key', value_name='value')
+unemployment['year']=unemployment['key'].apply(get_year)
+unemployment['key']=unemployment['key'].apply(remove_suffix)
+unemployment['FIPS']=unemployment['FIPS'].astype(str).apply(FIX_FIPS)
+unemployment=unemployment.pivot_table(index=['year','Stabr','FIPS'],columns='key',values='value')
+```
+
+### data view
+```{python}
+countypres
+unemployment
+```
+# Task 1 (R)
+
+```{r warning=FALSE}
+countypres=read.csv('data/countypres_2000-2016.csv')
+unemployment=read_xls('data/Unemployment.xls', skip = 5)
+shape = st_read('data/tl_2019_us_county-1')
+# countypres
+countypres = countypres %>% group_by(year, FIPS) %>%  filter(party=='republican'|party=='democrat') %>% filter(year %in% c('2008', '2012', '2016'))
+countypres$FIPS = as.character(countypres$FIPS)
+countypres$FIPS = ifelse(nchar(countypres$FIPS)==5, countypres$FIPS, paste('0', countypres$FIPS, sep = ''))
+countypres$vote_proportion = countypres$candidatevotes/countypres$totalvotes
+# unemploymen
+unemployment = unemployment %>% rename(FIPS=FIPStxt) %>% select(-c('area_name','Rural_urban_continuum_code_2013','Urban_influence_code_2013', 'Metro_2013')) %>% gather(key = 'key', value = 'value', -FIPS, -Stabr)
+unemployment$year = unemployment$key %>% str_extract(.,'\\d+')
+unemployment$key = unemployment$key %>% str_extract(.,'\\D+') %>% str_remove(.,'_$')
+unemployment = unemployment %>% spread(key, value) %>% filter(year %in% c('2008', '2012', '2016')) %>% select(-c('Med_HH_Income_Percent_of_State_Total', 'Median_Household_Income'))
+# map data
+states = st_as_sf(maps::map('state', plot = F, fill = T)) %>% cbind(st_coordinates(st_centroid(.))) %>% mutate(ID = str_to_title(ID))
+```
+### data view
+```{r}
+countypres
+unemployment
+states
+```
+# Task 2
+
+```{r}
+county_pres=merge(shape, countypres, by.x='GEOID', by.y='FIPS')
+county_unemployment=merge(shape, unemployment, by.x='GEOID', by.y='FIPS')
+counties = st_as_sf(maps::map('county', plot = F, fill = T))
+```
+
+## Texas
+```{r}
+propotion_vote=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_pres %>% filter(STATEFP=='48',party=='democrat'),aes(fill=vote_proportion))+
+  scale_fill_gradient(low = "#FFFFCC", high = "#993300")+
+  geom_label(data=states %>% filter(ID!='Texas'),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-107, -93), ylim = c(25, 37), expand = F)+
+  labs(x = '', y = '', fill = 'democrat vote proportion')+
+  theme(panel.background = element_rect(fill = "#FFFFE0"))
+unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_unemployment %>% filter(STATEFP=='48'),aes(fill=Unemployment_rate))+
+  scale_fill_gradient(low = "#FFFFCC", high = "#993300")+
+  geom_label(data=states %>% filter(ID!='Texas'),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-107, -93), ylim = c(25, 37), expand = F)+
+  labs(x = '', y = '', fill = 'unemployment rate')+
+   theme(panel.background = element_rect(fill = "#FFFFE0"))
+grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = 'Texas election vote proportion and unemployment rate')
+```
+
+## Pennsylvania
+```{r}
+propotion_vote=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_pres %>% filter(STATEFP=='42',party=='democrat'),aes(fill=vote_proportion))+
+  scale_fill_gradient(low = "#F0F8FF", high = "#333366")+
+  geom_label(data=states %>% filter(ID!='Pennsylvania'),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-81, -74), ylim = c(39, 44), expand = F)+
+  labs(x = '', y = '', fill = 'democrat vote proportion')+
+  theme(panel.background = element_rect(fill = "#F5F5F5"))
+unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_unemployment %>% filter(STATEFP=='42'),aes(fill=Unemployment_rate))+
+  scale_fill_gradient(low = "#F0F8FF", high = "#333366")+
+  geom_label(data=states %>% filter(ID!='Pennsylvania'),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-81, -74), ylim = c(39,44), expand = F)+
+  labs(x = '', y = '', fill = 'unemployment rate')+
+   theme(panel.background = element_rect(fill = "#F5F5F5"))
+grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = 'Pennsylvania election vote proportion and unemployment rate')
+```
+
+## California
+```{r}
+propotion_vote=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_pres %>% filter(STATEFP=='06',party=='democrat'),aes(fill=vote_proportion))+
+  scale_fill_gradient(low = "#FFF5EE", high = "#FF1493")+
+  geom_label(data=states %>% filter(ID!='California'),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-125, -113), ylim = c(29, 43), expand = F)+
+  labs(x = '', y = '', fill = 'democrat vote proportion')+
+  theme(panel.background = element_rect(fill = "#F0FFFF"))
+unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_unemployment %>% filter(STATEFP=='06'),aes(fill=Unemployment_rate))+
+  scale_fill_gradient(low = "#FFF5EE", high = "#FF1493")+
+  geom_label(data=states %>% filter(ID!='California'),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-125, -113), ylim = c(29, 43), expand = F)+
+  labs(x = '', y = '', fill = 'unemployment rate')+
+   theme(panel.background = element_rect(fill = "#F0FFFF"))
+grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = 'California election vote proportion and unemployment rate')
+```
