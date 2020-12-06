@@ -9,9 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Yuxuan Yao" />
 
 
-<title>About</title>
+<title>networks</title>
 
 <script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -290,7 +291,7 @@ $(document).ready(function () {
   <a href="project.html">Final Project</a>
 </li>
 <li>
-  <a href="network1.html">Assignment 7 Network</a>
+  <a href="networks1.html">Assignment 7 Network</a>
 </li>
 <li>
   <a href="geospatial.html">Assignment 6 Geospatial</a>
@@ -307,17 +308,103 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">About</h1>
+<h1 class="title toc-ignore">networks</h1>
+<h4 class="author">Yuxuan Yao</h4>
+<h4 class="date">2020/11/8</h4>
 
 </div>
 
 
-<p>Hello!</p>
-<p>This website is for the assignments and final project submission of Georgetown University ANLY-503 Analytical Data Visualization.</p>
-<p>Name: Yuxuan Yao</p>
-<p>NetID: yy560</p>
-<p>E-mail: <a href="mailto:yy560@georgetown.edu" class="email">yy560@georgetown.edu</a></p>
-<p>For more information: <a href="https://github.com/gu-yuxuanyao" class="uri">https://github.com/gu-yuxuanyao</a></p>
+<pre class="r"><code>library(tidyverse)
+library(igraph)
+library(circlize)
+library(knitr)
+opts_chunk$set(fig.show = &quot;hold&quot;)</code></pre>
+<pre class="r"><code># select rows
+data=readxl::read_xls(&#39;data/State_to_State_Migrations_Table_2018.xls&#39;, skip=4)</code></pre>
+<div id="extract-the-data-in-the-form-of-a-data-frame-with-3-columns-source-target-and-count-the-last-column-will-contain-the-numbers-of-people-who-migrated-from-the-source-state-to-the-target-state-in-2018" class="section level3">
+<h3>Extract the data in the form of a data frame with 3 columns: source, target and count; the last column will contain the numbers of people who migrated from the source state to the target state in 2018</h3>
+<pre class="r"><code># Set the target column
+data = rename(data, &#39;target&#39;=&#39;Current residence in...1&#39;)
+# remove no need columns
+data = select(data,-contains(&#39;Current residence in&#39;) )
+data = select(data,-seq(3,119,2) )
+data = select(data,-c(2:5))
+# view data
+data</code></pre>
+<pre><code>## # A tibble: 81 x 56
+##    target ...10 `Different stat~ ...15 ...17 ...19 ...21 `Different stat~ ...26
+##    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;
+##  1 &lt;NA&gt;   Alab~ Alaska           Ariz~ Arka~ Cali~ Colo~ Connecticut      Dela~
+##  2 &lt;NA&gt;   Esti~ Estimate         Esti~ Esti~ Esti~ Esti~ Estimate         Esti~
+##  3 &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt; 
+##  4 Unite~ 98194 39246            1795~ 69724 6911~ 2034~ 114235           33395
+##  5 &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;             &lt;NA&gt; 
+##  6 Alaba~ N/A   419              1915  1051  2659  1672  747              826  
+##  7 Alaska 518   N/A              910   722   3455  1847  0                0    
+##  8 Arizo~ 2801  2743             N/A   1487  68516 11517 503              49   
+##  9 Arkan~ 438   413              602   N/A   3728  3255  159              126  
+## 10 Calif~ 4591  2155             33670 2573  N/A   18755 6366             1143 
+## # ... with 71 more rows, and 47 more variables: ...28 &lt;chr&gt;, ...30 &lt;chr&gt;,
+## #   ...32 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...35` &lt;chr&gt;, ...37 &lt;chr&gt;, ...39 &lt;chr&gt;, ...41 &lt;chr&gt;,
+## #   ...43 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...46` &lt;chr&gt;, ...48 &lt;chr&gt;, ...50 &lt;chr&gt;, ...52 &lt;chr&gt;,
+## #   ...54 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...57` &lt;chr&gt;, ...59 &lt;chr&gt;, ...61 &lt;chr&gt;, ...63 &lt;chr&gt;,
+## #   ...65 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...68` &lt;chr&gt;, ...70 &lt;chr&gt;, ...72 &lt;chr&gt;, ...74 &lt;chr&gt;,
+## #   ...76 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...79` &lt;chr&gt;, ...81 &lt;chr&gt;, ...83 &lt;chr&gt;, ...85 &lt;chr&gt;,
+## #   ...87 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...90` &lt;chr&gt;, ...92 &lt;chr&gt;, ...94 &lt;chr&gt;, ...96 &lt;chr&gt;,
+## #   ...98 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...101` &lt;chr&gt;, ...103 &lt;chr&gt;, ...105 &lt;chr&gt;, ...107 &lt;chr&gt;,
+## #   ...109 &lt;chr&gt;, `Different state of residence 1 year ago
+## #   (continued)...112` &lt;chr&gt;, ...114 &lt;chr&gt;, ...116 &lt;chr&gt;, ...118 &lt;chr&gt;,
+## #   ...120 &lt;chr&gt;, `Abroad 1 year ago` &lt;chr&gt;, ...125 &lt;chr&gt;, ...127 &lt;chr&gt;,
+## #   ...129 &lt;chr&gt;</code></pre>
+<pre class="r"><code># the amount of columns is 56
+# ready for the rename processing
+col_names = colnames(data[,2:56])
+new_col_names = as.character(unlist(data[1, 2:56], use.names = FALSE))
+# rename
+data = rename_at(data,vars(col_names),~ new_col_names)
+# drop NULL values and no need columns
+data = drop_na(data)
+data = filter(data,!target %in% c(&#39;United States2&#39;,&#39;Puerto Rico&#39;,&#39;Guam&#39;) )
+data = gather(data,key=&#39;source&#39;, value=&#39;count&#39; ,-target)
+data$count = data$count %&gt;% as.numeric()
+data = data[,c(2,1,3)]</code></pre>
+</div>
+<div id="view-data" class="section level3">
+<h3>view data</h3>
+<pre class="r"><code># finished and view data
+head(data)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   source  target     count
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;
+## 1 Alabama Alabama       NA
+## 2 Alabama Alaska       518
+## 3 Alabama Arizona     2801
+## 4 Alabama Arkansas     438
+## 5 Alabama California  4591
+## 6 Alabama Colorado    3597</code></pre>
+</div>
+<div id="networks-select-new-york-texas-district-of-columbia-and-maryland" class="section level3">
+<h3>Networks (Select New York, Texas, District of Columbia and Maryland)</h3>
+<pre class="r"><code>temp = filter(data,source %in% c(&#39;New York&#39;, &#39;Texas&#39;, &#39;District of Columbia&#39;, &#39;Maryland&#39;))
+tmep = group_by(temp,source)
+temp = top_n(temp, 10, wt=count)
+network1 = graph.data.frame(temp)
+network2 = temp
+plot(network1,layout=layout_in_circle(network1))
+title(&#39;Top 10 People Moving States of \n New York, Texas, District of Columbia and Maryland&#39;)
+chordDiagram(network2, annotationTrack = c(&#39;grid&#39;),preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(network2))))))
+circos.track(track.index = 1, panel.fun = function(x, y) {circos.text(CELL_META$xcenter, CELL_META$ylim[1], CELL_META$sector.index, facing = &quot;clockwise&quot;)},bg.border = NA) 
+title(&quot;Top 10 People Moving States of \n New York, Texas, District of Columbia and Maryland&quot;)</code></pre>
+<p><img src="networks1_files/figure-html/unnamed-chunk-5-1.png" width="672" /><img src="networks1_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+</div>
 
 
 

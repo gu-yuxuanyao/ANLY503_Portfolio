@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yuxuan Yao" />
+
+
+<title>geospatial</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Anly-503 Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">About</a>
+</li>
+<li>
+  <a href="project.html">Final Project</a>
+</li>
+<li>
+  <a href="network1.html">Assignment 7 Network</a>
+</li>
+<li>
+  <a href="geospatial.html">Assignment 6 Geospatial</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">geospatial</h1>
+<h4 class="author">Yuxuan Yao</h4>
+<h4 class="date">2020/10/22</h4>
+
+</div>
+
+
+<div id="import-packages" class="section level1">
+<h1>Import Packages</h1>
+<pre class="r"><code>library(reticulate)
+library(ggplot2)
+library(tidyverse)
+library(gridExtra)
+library(readxl)
+library(sf)
+library(spData)
+library(maps)</code></pre>
+</div>
+<div id="task-1-python" class="section level1">
+<h1>Task 1 (Python)</h1>
+<div id="import-packages-1" class="section level3">
+<h3>import packages</h3>
+<pre class="python"><code>import numpy as np
+import pandas as pd
+import re</code></pre>
+</div>
+<div id="read-data" class="section level3">
+<h3>read data</h3>
+<pre class="python"><code>countypres=pd.read_csv(&#39;data/countypres_2000-2016.csv&#39;)
+unemployment=pd.read_excel(&#39;data/Unemployment.xls&#39;, skiprows=7) # select rows</code></pre>
+</div>
+<div id="democratic-or-republican" class="section level3">
+<h3>Democratic or Republican</h3>
+<pre class="python"><code>countypres=countypres[countypres[&#39;year&#39;].isin([2008,2012,2016]) &amp; countypres[&#39;party&#39;].isin([&#39;republican&#39;,&#39;democrat&#39;])]
+countypres[&#39;FIPS&#39;]=countypres[&#39;FIPS&#39;].astype(str).apply(lambda x: re.sub(&#39;\.0&#39;,&#39;&#39;,x))</code></pre>
+</div>
+<div id="functions" class="section level3">
+<h3>functions</h3>
+<pre class="python"><code>def FIX_FIPS(x):
+  if len(x)==4:
+    return(&#39;0&#39;+x)
+  else:
+    return x
+    
+def get_year(x):
+  return int(re.findall(&#39;\d+&#39;,x)[0])
+
+def remove_suffix(x):
+  return re.sub(&#39;_\d+&#39;,&#39;&#39;,x)</code></pre>
+</div>
+<div id="processing" class="section level3">
+<h3>processing</h3>
+<pre class="python"><code>countypres[&#39;FIPS&#39;]=countypres[&#39;FIPS&#39;].apply(FIX_FIPS)
+countypres[&#39;vote_proportion&#39;]=countypres[&#39;candidatevotes&#39;]/countypres[&#39;totalvotes&#39;]
+
+# unemployment data tidy
+unemployment=unemployment.rename(columns={&#39;FIPStxt&#39;:&#39;FIPS&#39;})
+unemployment=unemployment.drop(columns=[&#39;Median_Household_Income_2018&#39;,&#39;Med_HH_Income_Percent_of_State_Total_2018&#39;,&#39;area_name&#39;,&#39;Rural_urban_continuum_code_2013&#39;,&#39;Urban_influence_code_2013&#39;,&#39;Metro_2013&#39;])
+unemployment=unemployment.melt(id_vars=[&#39;FIPS&#39;,&#39;Stabr&#39;], var_name=&#39;key&#39;, value_name=&#39;value&#39;)
+unemployment[&#39;year&#39;]=unemployment[&#39;key&#39;].apply(get_year)
+unemployment[&#39;key&#39;]=unemployment[&#39;key&#39;].apply(remove_suffix)
+unemployment[&#39;FIPS&#39;]=unemployment[&#39;FIPS&#39;].astype(str).apply(FIX_FIPS)
+unemployment=unemployment.pivot_table(index=[&#39;year&#39;,&#39;Stabr&#39;,&#39;FIPS&#39;],columns=&#39;key&#39;,values=&#39;value&#39;)</code></pre>
+</div>
+<div id="data-view" class="section level3">
+<h3>data view</h3>
+<pre class="python"><code>countypres</code></pre>
+<pre><code>##        year    state state_po  ... totalvotes   version vote_proportion
+## 21815  2008  Alabama       AL  ...      23641  20191203        0.257730
+## 21816  2008  Alabama       AL  ...      23641  20191203        0.736136
+## 21818  2008  Alabama       AL  ...      81413  20191203        0.238119
+## 21819  2008  Alabama       AL  ...      81413  20191203        0.752595
+## 21821  2008  Alabama       AL  ...      11630  20191203        0.489854
+## ...     ...      ...      ...  ...        ...       ...             ...
+## 50516  2016   Alaska       AK  ...       5639  20191203        0.249158
+## 50518  2016   Alaska       AK  ...       4610  20191203        0.507158
+## 50519  2016   Alaska       AK  ...       4610  20191203        0.298698
+## 50521  2016   Alaska      NaN  ...       5056  20191203        0.054193
+## 50522  2016   Alaska      NaN  ...       5056  20191203        0.007911
+## 
+## [18948 rows x 12 columns]</code></pre>
+<pre class="python"><code>unemployment</code></pre>
+<pre><code>## key               Civilian_labor_force  Employed  Unemployed  Unemployment_rate
+## year Stabr FIPS                                                                
+## 2000 AK    02000              319511.0  299146.0     20365.0                6.4
+##            02013                 940.0     858.0        82.0                8.7
+##            02016                2735.0    2592.0       143.0                5.2
+##            02020              140602.0  133453.0      7149.0                5.1
+##            02050                6401.0    5824.0       577.0                9.0
+## ...                                ...       ...         ...                ...
+## 2019 WY    56037               21274.0   20446.0       828.0                3.9
+##            56039               15575.0   15151.0       424.0                2.7
+##            56041                9035.0    8682.0       353.0                3.9
+##            56043                3941.0    3786.0       155.0                3.9
+##            56045                3811.0    3701.0       110.0                2.9
+## 
+## [65406 rows x 4 columns]</code></pre>
+</div>
+</div>
+<div id="task-1-r" class="section level1">
+<h1>Task 1 (R)</h1>
+<pre class="r"><code>countypres=read.csv(&#39;data/countypres_2000-2016.csv&#39;)
+unemployment=read_xls(&#39;data/Unemployment.xls&#39;, skip = 5)
+shape = st_read(&#39;data/tl_2019_us_county-1&#39;)</code></pre>
+<pre><code>## Reading layer `tl_2019_us_county&#39; from data source `D:\503\portfolio\ANLY503_Portfolio\data\tl_2019_us_county-1&#39; using driver `ESRI Shapefile&#39;
+## Simple feature collection with 3233 features and 17 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -179.2311 ymin: -14.60181 xmax: 179.8597 ymax: 71.43979
+## geographic CRS: NAD83</code></pre>
+<pre class="r"><code># countypres
+countypres = countypres %&gt;% group_by(year, FIPS) %&gt;%  filter(party==&#39;republican&#39;|party==&#39;democrat&#39;) %&gt;% filter(year %in% c(&#39;2008&#39;, &#39;2012&#39;, &#39;2016&#39;))
+countypres$FIPS = as.character(countypres$FIPS)
+countypres$FIPS = ifelse(nchar(countypres$FIPS)==5, countypres$FIPS, paste(&#39;0&#39;, countypres$FIPS, sep = &#39;&#39;))
+countypres$vote_proportion = countypres$candidatevotes/countypres$totalvotes
+# unemploymen
+unemployment = unemployment %&gt;% rename(FIPS=FIPStxt) %&gt;% select(-c(&#39;area_name&#39;,&#39;Rural_urban_continuum_code_2013&#39;,&#39;Urban_influence_code_2013&#39;, &#39;Metro_2013&#39;)) %&gt;% gather(key = &#39;key&#39;, value = &#39;value&#39;, -FIPS, -Stabr)
+unemployment$year = unemployment$key %&gt;% str_extract(.,&#39;\\d+&#39;)
+unemployment$key = unemployment$key %&gt;% str_extract(.,&#39;\\D+&#39;) %&gt;% str_remove(.,&#39;_$&#39;)
+unemployment = unemployment %&gt;% spread(key, value) %&gt;% filter(year %in% c(&#39;2008&#39;, &#39;2012&#39;, &#39;2016&#39;)) %&gt;% select(-c(&#39;Med_HH_Income_Percent_of_State_Total&#39;, &#39;Median_Household_Income&#39;))
+# map data
+states = st_as_sf(maps::map(&#39;state&#39;, plot = F, fill = T)) %&gt;% cbind(st_coordinates(st_centroid(.))) %&gt;% mutate(ID = str_to_title(ID))</code></pre>
+<div id="data-view-1" class="section level3">
+<h3>data view</h3>
+<pre class="r"><code>countypres</code></pre>
+<pre><code>## # A tibble: 18,948 x 12
+## # Groups:   year, FIPS [9,468]
+##     year state state_po county FIPS  office candidate party candidatevotes
+##    &lt;int&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;          &lt;int&gt;
+##  1  2008 Alab~ AL       Autau~ 01001 Presi~ Barack O~ demo~           6093
+##  2  2008 Alab~ AL       Autau~ 01001 Presi~ John McC~ repu~          17403
+##  3  2008 Alab~ AL       Baldw~ 01003 Presi~ Barack O~ demo~          19386
+##  4  2008 Alab~ AL       Baldw~ 01003 Presi~ John McC~ repu~          61271
+##  5  2008 Alab~ AL       Barbo~ 01005 Presi~ Barack O~ demo~           5697
+##  6  2008 Alab~ AL       Barbo~ 01005 Presi~ John McC~ repu~           5866
+##  7  2008 Alab~ AL       Bibb   01007 Presi~ Barack O~ demo~           2299
+##  8  2008 Alab~ AL       Bibb   01007 Presi~ John McC~ repu~           6262
+##  9  2008 Alab~ AL       Blount 01009 Presi~ Barack O~ demo~           3522
+## 10  2008 Alab~ AL       Blount 01009 Presi~ John McC~ repu~          20389
+## # ... with 18,938 more rows, and 3 more variables: totalvotes &lt;int&gt;,
+## #   version &lt;int&gt;, vote_proportion &lt;dbl&gt;</code></pre>
+<pre class="r"><code>unemployment</code></pre>
+<pre><code>## # A tibble: 9,825 x 7
+##    FIPS  Stabr year  Civilian_labor_force  Employed Unemployed Unemployment_rate
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;
+##  1 00000 US    2008             153761298 144860522    8900776              5.79
+##  2 00000 US    2012             155119209 142600412   12518797              8.07
+##  3 00000 US    2016             158626135 150902618    7723517              4.87
+##  4 01000 AL    2008               2176489   2053477     123012              5.7 
+##  5 01000 AL    2012               2176337   2003290     173047              8   
+##  6 01000 AL    2016               2182558   2055251     127307              5.8 
+##  7 01001 AL    2008                 24687     23420       1267              5.1 
+##  8 01001 AL    2012                 25740     23961       1779              6.9 
+##  9 01001 AL    2016                 26031     24709       1322              5.1 
+## 10 01003 AL    2008                 83223     79372       3851              4.6 
+## # ... with 9,815 more rows</code></pre>
+<pre class="r"><code>states</code></pre>
+<pre><code>## Simple feature collection with 49 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -124.6813 ymin: 25.12993 xmax: -67.00742 ymax: 49.38323
+## geographic CRS: WGS 84
+## First 10 features:
+##                      ID          X        Y                           geom
+## 1               Alabama  -86.83042 32.80316 MULTIPOLYGON (((-87.46201 3...
+## 2               Arizona -111.66786 34.30060 MULTIPOLYGON (((-114.6374 3...
+## 3              Arkansas  -92.44013 34.90418 MULTIPOLYGON (((-94.05103 3...
+## 4            California -119.60154 37.26901 MULTIPOLYGON (((-120.006 42...
+## 5              Colorado -105.55251 38.99797 MULTIPOLYGON (((-102.0552 4...
+## 6           Connecticut  -72.72598 41.62566 MULTIPOLYGON (((-73.49902 4...
+## 7              Delaware  -75.51492 39.00558 MULTIPOLYGON (((-75.80231 3...
+## 8  District Of Columbia  -77.03410 38.91079 MULTIPOLYGON (((-77.13731 3...
+## 9               Florida  -82.49181 28.65743 MULTIPOLYGON (((-85.01548 3...
+## 10              Georgia  -83.45853 32.65165 MULTIPOLYGON (((-80.89018 3...</code></pre>
+</div>
+</div>
+<div id="task-2" class="section level1">
+<h1>Task 2</h1>
+<pre class="r"><code>county_pres=merge(shape, countypres, by.x=&#39;GEOID&#39;, by.y=&#39;FIPS&#39;)
+county_unemployment=merge(shape, unemployment, by.x=&#39;GEOID&#39;, by.y=&#39;FIPS&#39;)
+counties = st_as_sf(maps::map(&#39;county&#39;, plot = F, fill = T))</code></pre>
+<div id="texas" class="section level2">
+<h2>Texas</h2>
+<pre class="r"><code>propotion_vote=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_pres %&gt;% filter(STATEFP==&#39;48&#39;,party==&#39;democrat&#39;),aes(fill=vote_proportion))+
+  scale_fill_gradient(low = &quot;#FFFFCC&quot;, high = &quot;#993300&quot;)+
+  geom_label(data=states %&gt;% filter(ID!=&#39;Texas&#39;),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-107, -93), ylim = c(25, 37), expand = F)+
+  labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;democrat vote proportion&#39;)+
+  theme(panel.background = element_rect(fill = &quot;#FFFFE0&quot;))
+unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_unemployment %&gt;% filter(STATEFP==&#39;48&#39;),aes(fill=Unemployment_rate))+
+  scale_fill_gradient(low = &quot;#FFFFCC&quot;, high = &quot;#993300&quot;)+
+  geom_label(data=states %&gt;% filter(ID!=&#39;Texas&#39;),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-107, -93), ylim = c(25, 37), expand = F)+
+  labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;unemployment rate&#39;)+
+   theme(panel.background = element_rect(fill = &quot;#FFFFE0&quot;))
+grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = &#39;Texas election vote proportion and unemployment rate&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="pennsylvania" class="section level2">
+<h2>Pennsylvania</h2>
+<pre class="r"><code>propotion_vote=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_pres %&gt;% filter(STATEFP==&#39;42&#39;,party==&#39;democrat&#39;),aes(fill=vote_proportion))+
+  scale_fill_gradient(low = &quot;#F0F8FF&quot;, high = &quot;#333366&quot;)+
+  geom_label(data=states %&gt;% filter(ID!=&#39;Pennsylvania&#39;),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-81, -74), ylim = c(39, 44), expand = F)+
+  labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;democrat vote proportion&#39;)+
+  theme(panel.background = element_rect(fill = &quot;#F5F5F5&quot;))
+unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_unemployment %&gt;% filter(STATEFP==&#39;42&#39;),aes(fill=Unemployment_rate))+
+  scale_fill_gradient(low = &quot;#F0F8FF&quot;, high = &quot;#333366&quot;)+
+  geom_label(data=states %&gt;% filter(ID!=&#39;Pennsylvania&#39;),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-81, -74), ylim = c(39,44), expand = F)+
+  labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;unemployment rate&#39;)+
+   theme(panel.background = element_rect(fill = &quot;#F5F5F5&quot;))
+grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = &#39;Pennsylvania election vote proportion and unemployment rate&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="california" class="section level2">
+<h2>California</h2>
+<pre class="r"><code>propotion_vote=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_pres %&gt;% filter(STATEFP==&#39;06&#39;,party==&#39;democrat&#39;),aes(fill=vote_proportion))+
+  scale_fill_gradient(low = &quot;#FFF5EE&quot;, high = &quot;#FF1493&quot;)+
+  geom_label(data=states %&gt;% filter(ID!=&#39;California&#39;),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-125, -113), ylim = c(29, 43), expand = F)+
+  labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;democrat vote proportion&#39;)+
+  theme(panel.background = element_rect(fill = &quot;#F0FFFF&quot;))
+unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
+  geom_sf(data=county_unemployment %&gt;% filter(STATEFP==&#39;06&#39;),aes(fill=Unemployment_rate))+
+  scale_fill_gradient(low = &quot;#FFF5EE&quot;, high = &quot;#FF1493&quot;)+
+  geom_label(data=states %&gt;% filter(ID!=&#39;California&#39;),aes(X, Y, label = ID), size = 3)+
+  facet_wrap(~year, ncol =3)+
+  coord_sf(xlim = c(-125, -113), ylim = c(29, 43), expand = F)+
+  labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;unemployment rate&#39;)+
+   theme(panel.background = element_rect(fill = &quot;#F0FFFF&quot;))
+grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = &#39;California election vote proportion and unemployment rate&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
