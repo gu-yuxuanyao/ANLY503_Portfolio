@@ -5,8 +5,7 @@ date: "2020/10/22"
 output: html_document
 ---
 # Import Packages
-```{r message=FALSE, warning=FALSE}
-library(reticulate)
+```{r message=FALSE,warning=FALSE}
 library(ggplot2)
 library(tidyverse)
 library(gridExtra)
@@ -17,28 +16,24 @@ library(maps)
 ```
 
 # Task 1 (Python)
-
-### import packages
-```{python}
+```{r}
+library(reticulate)
+```
+```{python, eval=FALSE, message=TRUE}
 import numpy as np
 import pandas as pd
 import re
-```
 
 ### read data
-```{python}
 countypres=pd.read_csv('data/countypres_2000-2016.csv')
 unemployment=pd.read_excel('data/Unemployment.xls', skiprows=7) # select rows
-```
 
 ### Democratic or Republican
-```{python}
 countypres=countypres[countypres['year'].isin([2008,2012,2016]) & countypres['party'].isin(['republican','democrat'])]
 countypres['FIPS']=countypres['FIPS'].astype(str).apply(lambda x: re.sub('\.0','',x))
-```
 
 ### functions
-```{python}
+
 def FIX_FIPS(x):
   if len(x)==4:
     return('0'+x)
@@ -50,10 +45,8 @@ def get_year(x):
 
 def remove_suffix(x):
   return re.sub('_\d+','',x)
-```
 
 ### processing
-```{python}
 countypres['FIPS']=countypres['FIPS'].apply(FIX_FIPS)
 countypres['vote_proportion']=countypres['candidatevotes']/countypres['totalvotes']
 
@@ -65,13 +58,12 @@ unemployment['year']=unemployment['key'].apply(get_year)
 unemployment['key']=unemployment['key'].apply(remove_suffix)
 unemployment['FIPS']=unemployment['FIPS'].astype(str).apply(FIX_FIPS)
 unemployment=unemployment.pivot_table(index=['year','Stabr','FIPS'],columns='key',values='value')
-```
 
 ### data view
-```{python}
 countypres
 unemployment
 ```
+
 # Task 1 (R)
 
 ```{r warning=FALSE}

@@ -1,0 +1,411 @@
+---
+title: "Assignment 4"
+author: "Yuxuan Yao"
+date: "2020/12/6"
+output: html_document
+---
+# loan (R)
+```{r warning=FALSE}
+# import packages
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(stringr)
+library(plyr)
+```
+
+```{r}
+# read data
+loans <-read.csv('data/loans.csv')
+
+# process 24_B ... information
+# create 2 lists ready for temp list split
+term = c()
+status = c()
+
+# check every unit whether X is in temp list or not
+for (row in 1: nrow(loans)){
+  for (col in 6:ncol(loans)){
+    if (loans[row,col] == 'X'){
+      # append certain characters to lists
+      # first 2 characters are term
+      term = c(term, as.integer(substring(colnames(loans)[col], 2, 3)))
+      # last character is status
+      status = c(status, substring(colnames(loans)[col], 5, 5))
+      break
+    }
+  }
+}
+
+# create 2 new columns in loans
+loans$term = term
+loans$status =status
+
+# drop 24_B
+loans <- loans[c(1:5, 26:27)]
+
+# view data
+head(loans)
+
+# save to csv
+write_csv(loans,"loans_r.csv")
+```
+
+# loan (Python)
+```{python}
+import pandas as pd
+
+# load data
+loans = pd.read_csv("./data/loans.csv")
+print(loans.head())
+
+# process 24_B ... information
+# col names
+temp = list(loans.columns)[5:]
+
+# create 2 lists ready for temp list split
+term = []
+status = []
+
+# check every unit whether X is in temp list or not
+for index, row in loans.iterrows():
+    for col in temp:
+        if row[col] == 'X':
+            # first 2 characters are term
+            term.append(int(col[:2]))
+            # last character is status
+            status.append(col[-1])
+            break
+
+# create 2 new columns in loans
+loans['term'] = term
+loans['status'] = status
+
+# drop 24_B... columns
+loans = loans.drop(temp, axis=1)
+
+# view data
+print(loans.head())
+
+# save data
+loans.to_csv('loans_py.csv', index=None)
+```
+
+# district (R)
+```{r}
+# read data
+district <- read.csv('data/districts.csv')
+
+# remove '[', ']' and ready to split them by ','
+district = district %>% mutate(municipality_info = str_replace_all(municipality_info,"\\*|\\[|\\]", ""))
+district = district %>% mutate(unemployment_rate = str_replace_all(unemployment_rate,"\\*|\\[|\\]", ""))
+district = district %>% mutate(commited_crimes = str_replace_all(commited_crimes,"\\*|\\[|\\]", ""))
+
+# split these columns content by ','
+district[,c('municipality_0','municipality_500','municipality_2000','municipality_10000')] <- as.integer(str_split_fixed(district$municipality_info, ",", 4))
+district[,c('unemployment_rate_95','unemployment_rate_96')] <- as.double(str_split_fixed(district$unemployment_rate, ",", 2))
+district[,c('commited_crimes_95','commited_crimes_96')] <- as.double(str_split_fixed(district$commited_crimes, ",", 2))
+
+# drop original colunms
+district <- district[c(1:8, 12:19)]
+
+# view data
+head(district)
+
+# save data
+write.csv(district,'district_r.csv')
+```
+
+# district (Python)
+```{python}
+import pandas as pd
+# load data
+districts = pd.read_csv("./data/districts.csv")
+
+# create new lists to store
+# ready to split municipality_info
+m_0 = []
+m_500 = []
+m_2000 = []
+m_10000 = []
+for index, row in districts.iterrows():
+    x = row['municipality_info'].split(",")
+    m_0.append(int(x[0][1:]))
+    m_500.append(int(x[1]))
+    m_2000.append(int(x[2]))
+    m_10000.append(int(x[3][:-1]))
+
+# same as before
+u_95 = []
+u_96 = []
+for index, row in districts.iterrows():
+    y = row['unemployment_rate'].split(",")
+    u_95.append(y[0][1:])
+    u_96.append(y[1][:-1])
+# same as before
+c_95 = []
+c_96 = []
+for index, row in districts.iterrows():
+    z = row['commited_crimes'].split(",")
+    c_95.append(z[0][1:])
+    c_96.append(z[1][:-1])
+
+# create new columns to store term and status
+districts['municipality_0'] = m_0
+districts['municipality_500'] = m_500
+districts['municipality_2000'] = m_2000
+districts['municipality_10000'] = m_10000
+districts['unemployment_rate_95'] = u_95
+districts['unemployment_rate_96'] = u_96
+districts['commited_crimes_95'] = c_95
+districts['commited_crimes_96'] = c_96
+
+# drop original columns
+districts = districts.drop(['municipality_info','unemployment_rate','commited_crimes'], axis = 1)
+
+# view data
+print(districts.head())
+
+# save data
+districts.to_csv('district_py.csv', index = None)
+```
+
+
+# customers (R)
+```{r}
+# read data
+accounts <- read.csv(file = 'data/accounts.csv')
+districts <- read.csv(file = 'district_py.csv')
+links <- read.csv(file = 'data/links.csv')
+cards <- read.csv(file = 'data/cards.csv')
+loans <- read.csv(file = 'loans_py.csv')
+transactions <- read.csv(file = 'data/transactions.csv')
+# build the customers df based on accounts
+df <- accounts
+head(df)
+
+# account_id:
+# the id from accounts dataset
+df<- rename(df, c("id" = "account_id"))
+
+# district_name:
+# the name from districts
+# account(district_id) = districts(id)
+df$id <- df$district_id
+df <- merge(df, districts, by = 'id')
+# rename
+df <- rename(df, c("name"="district_name"))
+# remove original columns
+df <- df[c(2:6)]
+
+# open_date:
+# the date from accounts
+df <- rename(df, c("date" = "open_date"))
+
+# state_frequency:
+# the state_frequency from accounts
+
+# num_customers is the total number of clients associated with the account from links dataset
+cnt <- count(links, vars = "account_id")
+df$num_customers <- cnt$freq
+
+# num_customers:
+# the total number of clients in links
+# account(account_id) = links(account_id)
+links <- rename(links, c("id" = "link_id"))
+links <- merge(links, cards, by = 'link_id')
+cnt2 <- count(links, vars = "account_id")
+
+# credit_cards:
+# the number of clients in links
+# cards(link_id) = links(id); links(account_id) = account(credit_cards)
+# create a credit_cards column with 0s
+df <- cbind(credit_cards = 0, df)
+# replace 0 when the account_id appears in the links dataset with its number of cards
+df$credit_cards[df$account_id %in% cnt2$account_id] <- cnt2$freq
+
+# loan:
+# account_id in loans -> T
+# else F
+ids = c()
+for (id in df$account_id){
+  if (id %in% loans$account_id){
+    ids <-c(ids, TRUE)
+  }
+  else{
+    ids <- c(ids, FALSE)
+  }
+}
+df$loan <- ids
+
+# loan_amount, loan_payments, loan_term, loan_status are from loans dataset
+df <- merge(df, loans, by = 'account_id', all.x = TRUE)
+df <- rename(df, c("amount" = "loan_amount"))
+df <- rename(df, c("payments" = "loan_payments"))
+df <- rename(df, c("term" = "loan_term"))
+df <- rename(df, c("status" = "loan_status"))
+df <- df[-c(9:10)]
+
+# loan_default:
+# if loan status = B or D, True,
+# if loan status if A or C,  False.
+# NA if none.
+status = c()
+for (s in df$loan_status){
+  if (!is.na(s)){
+    if (s == 'B' | s == 'D'){
+      status <- c(status, TRUE)
+    }
+    else{
+      status <- c(status, FALSE)
+    }
+  }else{
+    status <- c(status,NA)
+  }
+}
+df$loan_default <- status
+
+# max_withdrawal, min_withdrawal
+# the amount from transactions dataset
+# transactions(id) = account(account_id)
+maxw <- aggregate(x = transactions$amount, by = list(transactions$account_id), FUN = max)
+maxw <- rename(maxw, c("Group.1" = "account_id"))
+maxw <- rename(maxw, c("x" = "max_withdrawal"))
+df <- merge(df, maxw, by = 'account_id', all.x = TRUE)
+minw <- aggregate(x = transactions$amount, by = list(transactions$account_id), FUN = min)
+minw <- rename(minw, c("Group.1" = "account_id"))
+minw <- rename(minw, c("x" = "min_withdrawal"))
+df <- merge(df, minw, by = 'account_id', all.x = TRUE)
+
+# cc_payments:
+# count the credit payments of each account in transactions
+transactions_credit <- transactions[!transactions$type == "debit", ]
+cnt3 <- count(transactions_credit, vars = "account_id")
+
+# merge
+df <- merge(df, cnt3, by = 'account_id', all.x = TRUE)
+df <- rename(df, c("freq" = "cc_payment"))
+
+# max_balance, min_balance
+# the largest/smallest balance of each account in transactions
+maxb <- aggregate(x = transactions$balance, by = list(transactions$account_id), FUN = max)
+maxb <- rename(maxb, c("Group.1" = "account_id"))
+maxb <- rename(maxb, c("x" = "max_balance"))
+df <- merge(df, maxb, by = 'account_id', all.x = TRUE)
+minb <- aggregate(x = transactions$balance, by = list(transactions$account_id), FUN = min)
+minb <- rename(minb, c("Group.1" = "account_id"))
+minb <- rename(minb, c("x" = "min_balance"))
+df <- merge(df, minb, by = 'account_id', all.x = TRUE)
+
+# remove district_id, which is not required
+df <- df[-c(3)]
+
+#view dataset
+head(df)
+
+# save data
+write_csv(df,"customers_r.csv")
+```
+
+# customers (Python)
+```{python}
+import pandas as pd
+import numpy as np
+
+# load data
+accounts = pd.read_csv("./data/accounts.csv")
+districts = pd.read_csv("./district_py.csv")
+links = pd.read_csv("./data/links.csv")
+cards = pd.read_csv("./data/cards.csv")
+loans = pd.read_csv("./loans_py.csv")
+transactions = pd.read_csv("./data/transactions.csv")
+
+# build the customers df based on accounts
+customers= accounts
+print(customers.head())
+
+# account_id:
+# the id from accounts dataset
+customers.rename(columns={'id': 'account_id'}, inplace=True)
+
+# district_name:
+# the name from districts
+# account(district_id) = districts(id)
+customers['district_name'] = customers['district_id'].apply(lambda x: str(districts[districts['id'] == x]["name"].values[0]))
+
+# open_date:
+# the date from accounts
+customers.rename(columns={'date': 'open_date'}, inplace=True)
+
+# state_frequency:
+# the state_frequency from accounts
+
+# num_customers:
+# the total number of clients in links
+# account(account_id) = links(account_id)
+customers['num_customers'] = customers['account_id'].apply(lambda x: links[links["account_id"] == x].shape[0])
+
+# credit_cards:
+# the number of clients in links
+# cards(link_id) = links(id); links(account_id) = account(credit_cards)
+links['credit_cards'] = links['id'].apply(lambda x: cards[cards['link_id'] == x].shape[0])
+customers['credit_cards'] = customers['account_id'].apply(lambda x: links[links['account_id'] == x]['credit_cards'].values[0])
+
+# loan:
+# account_id in loans -> T
+# else F
+customers['loan'] = customers["account_id"].apply(lambda x: loans[loans["account_id"] == x].shape[0] != 0)
+
+# left join loan and account_id
+customers = pd.merge(customers, loans, how="left", on=["account_id"])
+
+# rename
+customers.rename(columns={"amount": "loan_amount",  # loan_amount: the amount in loan dataset
+                   "payments": "loan_payments",  # loan_payment: the payments in loan dataset
+                   "term": "loan_term",  # loan_term: the term in loan dataset
+                   "status": "loan_status"},  # loan_status: the status in loan dataset
+          inplace=True)
+
+# loan_default:
+# if loan status = B or D, True,
+# if loan status if A or C,  False.
+# NA if none.
+status = []
+for index, row in customers.iterrows():
+    if pd.isna(row['loan_status']) == False:
+        if row['loan_status'] == 'B' or row['loan_status'] == 'D':
+            status.append('True')
+        else:
+            status.append('False')
+    else:
+        status.append(np.nan)
+
+# create 2 columns for term and status
+customers['loan_default'] = status
+
+# max_withdrawal, min_withdrawal
+# the amount from transactions dataset
+# transactions(id) = account(account_id)
+customers['max_withdrawal'] = customers['account_id'].apply(lambda x: np.max(transactions[transactions['account_id'] == x]['amount'].values))
+customers['min_withdrawal'] = customers['account_id'].apply(lambda x: np.min(transactions[transactions['account_id'] == x]['amount'].values))
+
+# cc_payments:
+# count the credit payments of each account in transactions
+ct = transactions[transactions['type'] == 'Credit']
+customers['cc_payments'] = customers["account_id"].apply(lambda x: ct[ct["account_id"] == x].shape[0])
+
+# max_balance, min_balance
+# the largest/smallest balance of each account in transactions
+customers['max_balance'] = customers['account_id'].apply(lambda x: np.max(transactions[transactions['account_id'] == x]['balance'].values))
+customers['min_balance'] = customers['account_id'].apply(lambda x: np.min(transactions[transactions['account_id'] == x]['balance'].values))
+
+# drop other columns
+customers.drop(["district_id", "id", "date"], axis=1, inplace=True)
+
+# view data
+print(customers.head())
+
+# save to csv
+customers.to_csv("customers_py.csv", index=None)
+```
+

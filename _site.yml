@@ -13,6 +13,10 @@ navbar:
       href: Assignment2.html
     - text: "Assignment 3 Hand-draw"
       href: Assignment3.html
+    - text: "Assignment 4 Bank Processing"
+      href: Assignment4.html
+    - text: "Assignment 5 Bank Analysis"
+      href: Assignment5.html
     - text: "Assignment 6 Geospatial"
       href: geospatial.html
     - text: "Assignment 7 Network"

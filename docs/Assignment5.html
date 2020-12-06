@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yuxuan Yao" />
+
+
+<title>Assignment 5</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Anly-503 Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Introduction</a>
+</li>
+<li>
+  <a href="project.html">Final Project</a>
+</li>
+<li>
+  <a href="Assignment1.html">Assignment 1 Conceptual Visualization</a>
+</li>
+<li>
+  <a href="Assignment2.html">Assignment 2 Suggestion</a>
+</li>
+<li>
+  <a href="Assignment3.html">Assignment 3 Hand-draw</a>
+</li>
+<li>
+  <a href="Assignment4.html">Assignment 4 Bank Processing</a>
+</li>
+<li>
+  <a href="Assignment5.html">Assignment 5 Bank Analysis</a>
+</li>
+<li>
+  <a href="geospatial.html">Assignment 6 Geospatial</a>
+</li>
+<li>
+  <a href="network.html">Assignment 7 Network</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Assignment 5</h1>
+<h4 class="author">Yuxuan Yao</h4>
+<h4 class="date">2020/12/6</h4>
+
+</div>
+
+
+<div id="task-1-r" class="section level1">
+<h1>Task 1 (R)</h1>
+<pre class="r"><code># Load Data
+account &lt;- read.csv(&#39;data/accounts_analytical.csv&#39;)
+transactions &lt;- read.csv(&#39;data/transactions.csv&#39;)</code></pre>
+<pre class="r"><code># Import packages
+library(VIM)
+library(mice)
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(lubridate)
+library(viridis)
+library(scales)
+library(plyr)</code></pre>
+<pre class="r"><code># Combine all 3 characteristics together
+account &lt;- read.csv(&#39;data/accounts_analytical.csv&#39;)
+account$card[is.na(account$credit_cards)] =&#39;Have credit card(s)&#39;
+account$card[!is.na(account$credit_cards)] =&#39;No credit card&#39;
+account$loan[is.na(account$loan_amount)] =&#39;Have loan&#39;
+account$loan[!is.na(account$loan_amount)] =&#39;No loan&#39;
+account$average_balance = (account$max_balance + account$min_balance) / 2
+ggplot(data=account, mapping = aes(x = average_balance, y = card))+
+  geom_point(mapping=aes(color=loan))+
+  ggtitle(&#39;Combined characteristics of accounts \n (Credit Card, Loan, Average Balance)&#39;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-3-1.png" width="672" /> ## Whether an account has a loan or not</p>
+<p>Same processing as the former question.</p>
+<pre class="r"><code>loan &lt;- ggplot(data = account,aes(x = loan_status,fill=loan_status))+
+  geom_bar()+
+  labs(x = &#39;loan status&#39;, y = &#39;count&#39;)+
+  ggtitle(&quot;The count number of different loan status&quot;)+
+  geom_text(stat=&#39;count&#39;,aes(label = ..count.., y = ..count..))+
+  scale_x_discrete(labels=c(&quot;Not Sure(NA)&quot;,&quot;current&quot;,&quot;expired&quot;))+
+  guides(fill=FALSE)
+
+loan</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Now, as the hisogram shows, we could clearly know there are 3818 accounts don’t have loan (ther are NA value so we are not sure they have loan or not), 448 accounts have loan for curren timeand 234 accounts are in expired.</p>
+<div id="the-average-balance-for-the-account" class="section level2">
+<h2>The average balance for the account</h2>
+<p>The average balance means (max+min)/2</p>
+<pre class="r"><code>account$mean_balance = (account$max_balance + account$min_balance) / 2</code></pre>
+<pre class="r"><code>avg_balance &lt;- ggplot(account,aes(x=mean_balance)) +
+  geom_histogram(aes(y=..density..),
+                 binwidth = 10000,
+                  colour = &#39;blue&#39;, fill = &#39;grey&#39;) +
+  geom_density(alpha=0.2,fill=&#39;pink&#39;)
+
+avg_balance</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>As we can see, the distribution of the average balance is skwed noraml distribution.</p>
+</div>
+</div>
+<div id="task-2-r" class="section level1">
+<h1>Task 2 (R)</h1>
+<pre class="r"><code># Load data
+account &lt;- read.csv(&#39;data/accounts_analytical.csv&#39;)
+transactions &lt;- read.csv(&#39;data/transactions.csv&#39;)</code></pre>
+</div>
+<div id="what-is-the-distribution-of-all-loans-and-what-are-their-characteristics" class="section level1">
+<h1>What is the distribution of all loans and what are their characteristics?</h1>
+<div id="distribution-of-loan_term" class="section level2">
+<h2>distribution of loan_term</h2>
+<pre class="r"><code>loan_term_counts = as.data.frame(table(account$loan_term))
+ggplot(loan_term_counts,aes(x=as.factor(Var1),y=as.factor(Freq),fill=Var1)) +
+  geom_bar(stat=&#39;identity&#39;) +
+  xlab(&quot;loan_term&quot;) +
+  ylab(&quot;count&quot;) +
+  ggtitle(&#39;the frequency of loan term&#39;)</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>As we can see,when loan term is 36 months, it has the least count, but other loan terms has simialr counts by the distribution of loan_term.</p>
+</div>
+<div id="distribution-of-loan-amount-in-different-loan-status" class="section level2">
+<h2>Distribution of loan amount in different loan status</h2>
+<pre class="r"><code>ggplot(account, aes(x=loan_amount, fill=loan_status)) +
+  geom_histogram(alpha=.5, position=&quot;identity&quot;) +
+  ggtitle(&#39;The distribution of loan amount in different loan status&#39;)+
+  theme_economist()</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>As we can see, the distribution of loan amount in current loan status is similar to the expired’s.</p>
+</div>
+<div id="generally-analytics" class="section level2">
+<h2>Generally Analytics</h2>
+<pre class="r"><code>loans &lt;- account[,c(&#39;loan_date&#39;,&#39;loan_amount&#39;,&#39;loan_payment&#39;,&#39;loan_term&#39;, &#39;loan_status&#39;, &#39;loan_default&#39;)]
+loans &lt;- na.omit(loans)
+loans$loan_default &lt;- ifelse(loans$loan_default == &quot;TRUE&quot;, &#39;default&#39;,
+                      ifelse(loans$loan_default == &quot;FALSE&quot;, &#39;not default&#39;, NA))
+default_only = subset(loans, loan_default == &#39;default&#39;)
+default_only$loan_paid = default_only$loan_payment / default_only$loan_amount
+all &lt;- ggplot(data=default_only, mapping=aes(x=loan_amount, y=loan_payment,size=loan_paid, shape=factor(loan_term),alpha=0.5))+
+  geom_point() +
+  ggtitle(&quot;Distribution of Default Loans \n with Loan Term, Payment, and Amount&quot;)+
+  guides(color = FALSE, alpha = FALSE)
+
+all</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>As we can see, the graph shows that in the default loans,</p>
+<p>when the loan amoint is larger and the loan term is longer,</p>
+<p>accounts pay less.</p>
+</div>
+</div>
+<div id="task-3-r" class="section level1">
+<h1>Task 3 (R)</h1>
+<pre class="r"><code># Load data
+account &lt;- read.csv(&#39;data/accounts_analytical.csv&#39;)
+transactions &lt;- read.csv(&#39;data/transactions.csv&#39;)</code></pre>
+</div>
+<div id="is-there-a-relationship-between-a-good-or-bad-loan-and-the-time-between-an-account-is-opened-an-the-loan-is-created-is-there-a-specific-set-of-accounts-that-seem-to-be-at-higher-or-lower-risk-of-defaulting" class="section level1">
+<h1>Is there a relationship between a good or bad loan and the time between an account is opened an the loan is created? Is there a specific set of accounts that seem to be at higher or lower risk of defaulting?</h1>
+<pre class="r"><code>account[&#39;accounts_year&#39;] = year(account$acct_creation_date)
+account[&#39;accounts_day&#39;] = day(account$acct_creation_date)
+account[&#39;accounts_weekend&#39;] &lt;- account$day %in% c(&quot;Sat&quot;, &quot;Sun&quot;)
+account[&#39;month&#39;] &lt;- month(account$acct_creation_date)
+account[&#39;accounts_holiday&#39;] &lt;- with(account,ifelse(month &gt;= 2 &amp; month &lt;= 5, &#39;Spring&#39;,
+                                                   ifelse(month &gt;= 6 &amp; month &lt;= 8, &#39;Summer&#39;,
+                                                          ifelse(month &gt;= 9 &amp; month &lt;= 11,&#39;Autumn&#39;, &#39;Winter&#39;))))
+account$loan_date[grepl(&quot;^ *$&quot;,account$loan_date)] &lt;- NA
+account[&#39;loan_year&#39;] = year(account$loan_date)
+account[&#39;loan_day&#39;] = day(account$loan_date)
+account[&#39;loan_weekend&#39;] &lt;- account$day %in% c(&quot;Sat&quot;, &quot;Sun&quot;)
+account[&#39;month&#39;] &lt;- month(account$loan_date)
+account[&#39;loan_holiday&#39;] &lt;- with(account,ifelse(month &gt;= 2 &amp; month &lt;= 5, &#39;Spring&#39;,
+                                               ifelse(month &gt;= 6 &amp; month &lt;= 8, &#39;Summer&#39;,
+                                                      ifelse(month &gt;= 9 &amp; month &lt;= 11,&#39;Autumn&#39;, &#39;Winter&#39;))))</code></pre>
+<div id="accounts-created-in-each-year" class="section level2">
+<h2>accounts created in each year</h2>
+<pre class="r"><code>ggplot(data=account,aes(accounts_year)) +
+  geom_line(stat=&#39;count&#39;,) +
+  ggtitle(&#39;The count of accounts created in each year&#39;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>As the line plot shows, in 1996, there are most accounts created while 1994 has the least.</p>
+</div>
+<div id="loan-satuts-and-loan-default-change-by-years" class="section level2">
+<h2>loan satuts and loan default change by years</h2>
+<pre class="r"><code>year_loan_status_counts = account %&gt;% group_by(accounts_year,loan_status) %&gt;% count()
+year_loan_status_counts$loan_status = sub(&quot;^$&quot;, &quot;Unknown&quot;, year_loan_status_counts$loan_status)
+ggplot(year_loan_status_counts,aes(accounts_year,fill=loan_status))+
+  geom_bar(position=&quot;stack&quot;)+
+  labs(x = &quot;Year&quot;)+
+  ggtitle(&#39;The Loan Status change by years&#39;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>As the stack bar plot shows, in 1993, there are most accounts expired while in 1997, it has the least amount of expired loan accounts.</p>
+<p>In 1996, it has the most amount of current loan accounts while in 1994, it has the least current loan accounts.</p>
+<pre class="r"><code>year_loan_default_counts = account %&gt;% group_by(accounts_year,loan_default) %&gt;% count()
+year_loan_default_counts$loan_default[is.na(year_loan_default_counts$loan_default)] &lt;- &#39;Unknown&#39;
+ggplot(year_loan_default_counts,aes(accounts_year,fill=loan_default))+
+  geom_bar(position=&quot;stack&quot;)+
+  labs(x = &quot;Year&quot;)+
+  ggtitle(&#39;The Loan Default change by years&#39;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>The result is very similar to the loan status change by years.</p>
+<p>Therefore, the loan status and loan default is not related with the account created date.</p>
+<p>And, the loan status is related with loan created date, because with the time going, the current loan is very likely changing to expired and the other loan accounts are tend to be default.</p>
+</div>
+<div id="higher-or-lower-risk-of-defaulting" class="section level2">
+<h2>higher or lower risk of defaulting</h2>
+<pre class="r"><code>account %&gt;% filter(loan_default==&#39;TRUE&#39;)</code></pre>
+<pre class="r"><code>higher_risk = account %&gt;% filter(min_balance &lt;= 0)
+higher_risk$loan_default[is.na(higher_risk$loan_default)] &lt;- &#39;Unknown&#39;
+higher_risk = higher_risk %&gt;%
+  group_by(loan_default) %&gt;%
+  dplyr::summarise(counts = n()) %&gt;%
+  mutate(percentages = round(counts/sum(counts)*100,2))
+ggplot(data=higher_risk,aes(x=factor(1),y=counts,fill=loan_default)) +
+  geom_col(aes(fill = loan_default), width = 1) +
+  geom_text(aes(label = percentages), position = position_stack(vjust = 0.5)) +
+ coord_polar(&quot;y&quot;) + ggtitle(&#39;The distribution of higher default loan risk accounts&#39;)</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>As the pie chart shows, the accounts all are higher risk default loan.</p>
+</div>
+<div id="top-min-balance-vs.-higher-risk" class="section level2">
+<h2>Top min balance vs. higher risk</h2>
+<pre class="r"><code>n = 15
+Top_10_min_balance = subset(account, min_balance &gt; quantile(min_balance, prob = 1 - n/100))
+ggplot(data=Top_10_min_balance,aes(loan_default)) +
+  geom_bar(stat=&#39;count&#39;, fill = &#39;pink&#39;, color= &#39;grey&#39;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>As the result shows, min_balance may be an important factor of higher risk of default loan.</p>
+</div>
+</div>
+<div id="task-4-r" class="section level1">
+<h1>Task 4 (R)</h1>
+<pre class="r"><code># Load data
+account &lt;- read.csv(&#39;data/accounts_analytical.csv&#39;)
+transactions &lt;- read.csv(&#39;data/transactions.csv&#39;)</code></pre>
+</div>
+<div id="for-the-account-with-the-highest-number-of-transactions-make-a-time-series-line-plot-for-the-behavior-of-the-account-over-time-including-all-debits-and-credits-the-different-methods-and-the-with-the-different-categories." class="section level1">
+<h1>For the account with the highest number of transactions, make a time series line plot for the behavior of the account over time, including all debits and credits, the different methods, and the with the different categories.</h1>
+<pre class="r"><code>num_trans = transactions %&gt;% dplyr::count(account_id) 
+names(num_trans)[names(num_trans)==&#39;n&#39;] &lt;- &#39;transaction_count&#39;
+num_trans &lt;- num_trans[order(-num_trans$transaction_count),]
+head(num_trans)</code></pre>
+<pre><code>##      account_id transaction_count
+## 4261       8261               675
+## 3642       3834               665
+## 89           96               661
+## 2792       2932               655
+## 4340       9307               649
+## 4339       9265               643</code></pre>
+<p>As we can see, account id 8261 has the most transaction records, 675 times.</p>
+<div id="processing" class="section level3">
+<h3>Processing</h3>
+<pre class="r"><code>high_trans &lt;- filter(transactions, account_id == 8261)
+head(high_trans)</code></pre>
+<pre><code>##        id account_id       date   type amount balance bank account
+## 1 2502334       8261 1993-05-12 credit    500     500           NA
+## 2 2502339       8261 1993-05-14 credit  21959   22459   IJ  978094
+## 3 2502340       8261 1993-06-14 credit  32938   57603   IJ  978094
+## 4 2502341       8261 1993-07-14 credit  21959   64666   IJ  978094
+## 5 2502342       8261 1993-08-14 credit  21959   65429   IJ  978094
+## 6 2502343       8261 1993-09-14 credit  21959   65807   IJ  978094
+##          method category
+## 1          cash         
+## 2 bank transfer         
+## 3 bank transfer         
+## 4 bank transfer         
+## 5 bank transfer         
+## 6 bank transfer</code></pre>
+<pre class="r"><code>high_trans$date &lt;- as.Date(high_trans$date, &quot;%Y-%m-%d&quot;)
+head(high_trans)</code></pre>
+<pre><code>##        id account_id       date   type amount balance bank account
+## 1 2502334       8261 1993-05-12 credit    500     500           NA
+## 2 2502339       8261 1993-05-14 credit  21959   22459   IJ  978094
+## 3 2502340       8261 1993-06-14 credit  32938   57603   IJ  978094
+## 4 2502341       8261 1993-07-14 credit  21959   64666   IJ  978094
+## 5 2502342       8261 1993-08-14 credit  21959   65429   IJ  978094
+## 6 2502343       8261 1993-09-14 credit  21959   65807   IJ  978094
+##          method category
+## 1          cash         
+## 2 bank transfer         
+## 3 bank transfer         
+## 4 bank transfer         
+## 5 bank transfer         
+## 6 bank transfer</code></pre>
+</div>
+<div id="time-series-plot-by-types" class="section level3">
+<h3>Time Series Plot by Types</h3>
+<pre class="r"><code>ggplot(high_trans, aes(x = date, y = amount)) + 
+  geom_line(aes(color = type), size = .75) +
+  ggtitle(&quot;Time Series Plot by Types&quot;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+</div>
+<div id="time-series-plot-by-payment-methods" class="section level3">
+<h3>Time Series Plot by Payment Methods</h3>
+<pre class="r"><code>high_trans_method &lt;- subset(high_trans, method == &#39;cash&#39; | method == &#39;bank transfer&#39;)
+ggplot(data = high_trans_method, aes(x = date, y = amount))+
+  geom_line(colour = &#39;orchid3&#39;,size = .5)+ 
+  facet_wrap(~method, ncol=1)+ 
+  ggtitle(&quot;Time Series Plot by Payment Methods&quot;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+</div>
+<div id="time-series-plot-by-categories" class="section level3">
+<h3>Time Series Plot by Categories</h3>
+<pre class="r"><code>high_trans_cate &lt;- subset(high_trans, category == &#39;household payment&#39; | category == &#39;insurance payment&#39; | category == &#39;loan payment&#39;| category == &#39;interest credit&#39; | category == &#39;statement charge&#39;)
+ggplot(high_trans_cate, aes(x = date, y = amount)) + 
+  geom_line(aes(color = category), size = .75) +
+  ggtitle(&quot;Time Series Plot by Categories&quot;)+
+  theme_economist()</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+</div>
+</div>
+<div id="task-4-python" class="section level1">
+<h1>Task 4 (Python)</h1>
+<pre class="python"><code># Import packages
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Read data
+account = pd.read_csv(&#39;data/accounts_analytical.csv&#39;)
+transactions = pd.read_csv(&#39;data/transactions.csv&#39;)
+account.head()
+transactions.head()
+
+# Find the account with the highest number of transactions
+transactions.groupby([&#39;account_id&#39;]).size().reset_index(name=&#39;counts&#39;).max()
+
+# so the account_id = 11382 has the most transaction records, 675 times.
+highest_tran = transactions[transactions[&#39;account_id&#39;] == 11382]
+
+# For the account with the highest number of transactions,
+# make a time series line plot for the behavior of the account over time,
+# including all debits and credits, the different methods, and the with the different categories.
+highest_tran[&#39;year&#39;] = pd.DatetimeIndex(highest_tran[&#39;date&#39;]).year
+
+highest_tran.head()
+
+# Time Series Plot by Types
+type = sns.lineplot(x=&quot;year&quot;, y=&quot;amount&quot;, hue =&#39;type&#39;, ci = None, data=highest_tran)
+type.set_title(&#39;Time Series Plot by Types&#39;)
+plt.xticks([1995,1996,1997,1998])
+
+# Time Series Plot by Payment Methods
+method = sns.lineplot(x=&quot;year&quot;, y=&quot;amount&quot;, hue =&#39;method&#39;, ci =None, data=highest_tran)
+method.set_title(&#39;Time Series Plot by Payment Methods&#39;)
+plt.xticks([1995,1996,1997,1998])</code></pre>
+<p><img src="python1.png" alt="plot1" /> <img src="python2.png" alt="plot2" /> <img src="python3.png" alt="plot3" /></p>
+</div>
+<div id="task-5-r" class="section level1">
+<h1>Task 5 (R)</h1>
+<pre class="r"><code># Load data
+account &lt;- read.csv(&#39;data/accounts_analytical.csv&#39;)
+transactions &lt;- read.csv(&#39;data/transactions.csv&#39;)</code></pre>
+</div>
+<div id="explore-the-validity-of-the-data-for-the-case-whether-or-not-an-account-has-a-credit-card-and-whether-or-not-they-have-associated-credit-card-transactions.-is-there-anything-worth-noting" class="section level1">
+<h1>Explore the validity of the data for the case whether or not an account has a credit card and whether or not they have associated credit card transactions. Is there anything worth noting?</h1>
+<pre class="r"><code>transactions_d = transactions[transactions$type != &#39;debit&#39;,] %&gt;% select(account_id,type)
+transactions_dd = transactions_d %&gt;% group_by(account_id,type) %&gt;% distinct()
+card &lt;- merge(account, transactions_dd, by=&quot;account_id&quot;)
+dim_card = dim(card)
+dim_card_null = dim(card[is.na(card$credit_cards),] %&gt;% filter(credit_bank_transfer_other_txn_ct!=0 | credit_bank_transfer_other_txn_tot != 0 |credit_bank_transfer_other_avg_txn != 0 | credit_cash_other_txn_ct!= 0))
+df &lt;- data.frame(value = c(dim_card[1],dim_card_null[1]), Group = c(&quot;No Credit Card&quot;, &quot;No Credit Card But Transaction&quot;)) %&gt;%
+  mutate(Group = factor(Group, levels = c(&quot;No Credit Card&quot;, &quot;No Credit Card But Transaction&quot;)),cumulative = cumsum(value),midpoint = cumulative - value / 2,
+         label = paste0(round(value / sum(value) * 100, 1), &quot;%&quot;))
+colors &lt;- c(&#39;grey50&#39;,&#39;pink1&#39;)
+ggplot(df,aes(x = 1, weight = value, fill = Group)) +
+  ggtitle(&#39;The Pir Chart of Having Transactions \n by Credit Cards Status&#39;)+
+   geom_bar(width = 1, position = &quot;stack&quot;,color = colors) +
+   coord_polar(theta = &quot;y&quot;) +
+   geom_text(aes(x = 1.3, y = midpoint, label = label))+
+  theme_base()+
+  theme(axis.line.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank(),
+        axis.line.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank())</code></pre>
+<p><img src="Assignment5_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p>As the pie chart shows, 54.4% accounts doesn’t not have credit card but they have transactions.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

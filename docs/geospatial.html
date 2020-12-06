@@ -300,6 +300,12 @@ $(document).ready(function () {
   <a href="Assignment3.html">Assignment 3 Hand-draw</a>
 </li>
 <li>
+  <a href="Assignment4.html">Assignment 4 Bank Processing</a>
+</li>
+<li>
+  <a href="Assignment5.html">Assignment 5 Bank Analysis</a>
+</li>
+<li>
   <a href="geospatial.html">Assignment 6 Geospatial</a>
 </li>
 <li>
@@ -326,36 +332,39 @@ $(document).ready(function () {
 
 <div id="import-packages" class="section level1">
 <h1>Import Packages</h1>
-<pre class="r"><code>library(reticulate)
-library(ggplot2)
-library(tidyverse)
-library(gridExtra)
-library(readxl)
-library(sf)
-library(spData)
-library(maps)</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(gridExtra)</code></pre>
+<pre><code>## Warning: package &#39;gridExtra&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(readxl)</code></pre>
+<pre><code>## Warning: package &#39;readxl&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(sf)</code></pre>
+<pre><code>## Warning: package &#39;sf&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(spData)</code></pre>
+<pre><code>## Warning: package &#39;spData&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(maps)</code></pre>
+<pre><code>## Warning: package &#39;maps&#39; was built under R version 4.0.3</code></pre>
 </div>
 <div id="task-1-python" class="section level1">
 <h1>Task 1 (Python)</h1>
-<div id="import-packages-1" class="section level3">
-<h3>import packages</h3>
+<pre class="r"><code>library(reticulate)</code></pre>
+<pre><code>## Warning: package &#39;reticulate&#39; was built under R version 4.0.3</code></pre>
 <pre class="python"><code>import numpy as np
 import pandas as pd
-import re</code></pre>
-</div>
-<div id="read-data" class="section level3">
-<h3>read data</h3>
-<pre class="python"><code>countypres=pd.read_csv(&#39;data/countypres_2000-2016.csv&#39;)
-unemployment=pd.read_excel(&#39;data/Unemployment.xls&#39;, skiprows=7) # select rows</code></pre>
-</div>
-<div id="democratic-or-republican" class="section level3">
-<h3>Democratic or Republican</h3>
-<pre class="python"><code>countypres=countypres[countypres[&#39;year&#39;].isin([2008,2012,2016]) &amp; countypres[&#39;party&#39;].isin([&#39;republican&#39;,&#39;democrat&#39;])]
-countypres[&#39;FIPS&#39;]=countypres[&#39;FIPS&#39;].astype(str).apply(lambda x: re.sub(&#39;\.0&#39;,&#39;&#39;,x))</code></pre>
-</div>
-<div id="functions" class="section level3">
-<h3>functions</h3>
-<pre class="python"><code>def FIX_FIPS(x):
+import re
+
+### read data
+countypres=pd.read_csv(&#39;data/countypres_2000-2016.csv&#39;)
+unemployment=pd.read_excel(&#39;data/Unemployment.xls&#39;, skiprows=7) # select rows
+
+### Democratic or Republican
+countypres=countypres[countypres[&#39;year&#39;].isin([2008,2012,2016]) &amp; countypres[&#39;party&#39;].isin([&#39;republican&#39;,&#39;democrat&#39;])]
+countypres[&#39;FIPS&#39;]=countypres[&#39;FIPS&#39;].astype(str).apply(lambda x: re.sub(&#39;\.0&#39;,&#39;&#39;,x))
+
+### functions
+
+def FIX_FIPS(x):
   if len(x)==4:
     return(&#39;0&#39;+x)
   else:
@@ -365,11 +374,10 @@ def get_year(x):
   return int(re.findall(&#39;\d+&#39;,x)[0])
 
 def remove_suffix(x):
-  return re.sub(&#39;_\d+&#39;,&#39;&#39;,x)</code></pre>
-</div>
-<div id="processing" class="section level3">
-<h3>processing</h3>
-<pre class="python"><code>countypres[&#39;FIPS&#39;]=countypres[&#39;FIPS&#39;].apply(FIX_FIPS)
+  return re.sub(&#39;_\d+&#39;,&#39;&#39;,x)
+
+### processing
+countypres[&#39;FIPS&#39;]=countypres[&#39;FIPS&#39;].apply(FIX_FIPS)
 countypres[&#39;vote_proportion&#39;]=countypres[&#39;candidatevotes&#39;]/countypres[&#39;totalvotes&#39;]
 
 # unemployment data tidy
@@ -379,42 +387,11 @@ unemployment=unemployment.melt(id_vars=[&#39;FIPS&#39;,&#39;Stabr&#39;], var_nam
 unemployment[&#39;year&#39;]=unemployment[&#39;key&#39;].apply(get_year)
 unemployment[&#39;key&#39;]=unemployment[&#39;key&#39;].apply(remove_suffix)
 unemployment[&#39;FIPS&#39;]=unemployment[&#39;FIPS&#39;].astype(str).apply(FIX_FIPS)
-unemployment=unemployment.pivot_table(index=[&#39;year&#39;,&#39;Stabr&#39;,&#39;FIPS&#39;],columns=&#39;key&#39;,values=&#39;value&#39;)</code></pre>
-</div>
-<div id="data-view" class="section level3">
-<h3>data view</h3>
-<pre class="python"><code>countypres</code></pre>
-<pre><code>##        year    state state_po  ... totalvotes   version vote_proportion
-## 21815  2008  Alabama       AL  ...      23641  20191203        0.257730
-## 21816  2008  Alabama       AL  ...      23641  20191203        0.736136
-## 21818  2008  Alabama       AL  ...      81413  20191203        0.238119
-## 21819  2008  Alabama       AL  ...      81413  20191203        0.752595
-## 21821  2008  Alabama       AL  ...      11630  20191203        0.489854
-## ...     ...      ...      ...  ...        ...       ...             ...
-## 50516  2016   Alaska       AK  ...       5639  20191203        0.249158
-## 50518  2016   Alaska       AK  ...       4610  20191203        0.507158
-## 50519  2016   Alaska       AK  ...       4610  20191203        0.298698
-## 50521  2016   Alaska      NaN  ...       5056  20191203        0.054193
-## 50522  2016   Alaska      NaN  ...       5056  20191203        0.007911
-## 
-## [18948 rows x 12 columns]</code></pre>
-<pre class="python"><code>unemployment</code></pre>
-<pre><code>## key               Civilian_labor_force  Employed  Unemployed  Unemployment_rate
-## year Stabr FIPS                                                                
-## 2000 AK    02000              319511.0  299146.0     20365.0                6.4
-##            02013                 940.0     858.0        82.0                8.7
-##            02016                2735.0    2592.0       143.0                5.2
-##            02020              140602.0  133453.0      7149.0                5.1
-##            02050                6401.0    5824.0       577.0                9.0
-## ...                                ...       ...         ...                ...
-## 2019 WY    56037               21274.0   20446.0       828.0                3.9
-##            56039               15575.0   15151.0       424.0                2.7
-##            56041                9035.0    8682.0       353.0                3.9
-##            56043                3941.0    3786.0       155.0                3.9
-##            56045                3811.0    3701.0       110.0                2.9
-## 
-## [65406 rows x 4 columns]</code></pre>
-</div>
+unemployment=unemployment.pivot_table(index=[&#39;year&#39;,&#39;Stabr&#39;,&#39;FIPS&#39;],columns=&#39;key&#39;,values=&#39;value&#39;)
+
+### data view
+countypres
+unemployment</code></pre>
 </div>
 <div id="task-1-r" class="section level1">
 <h1>Task 1 (R)</h1>
@@ -439,7 +416,7 @@ unemployment$key = unemployment$key %&gt;% str_extract(.,&#39;\\D+&#39;) %&gt;% 
 unemployment = unemployment %&gt;% spread(key, value) %&gt;% filter(year %in% c(&#39;2008&#39;, &#39;2012&#39;, &#39;2016&#39;)) %&gt;% select(-c(&#39;Med_HH_Income_Percent_of_State_Total&#39;, &#39;Median_Household_Income&#39;))
 # map data
 states = st_as_sf(maps::map(&#39;state&#39;, plot = F, fill = T)) %&gt;% cbind(st_coordinates(st_centroid(.))) %&gt;% mutate(ID = str_to_title(ID))</code></pre>
-<div id="data-view-1" class="section level3">
+<div id="data-view" class="section level3">
 <h3>data view</h3>
 <pre class="r"><code>countypres</code></pre>
 <pre><code>## # A tibble: 18,948 x 12
@@ -517,7 +494,7 @@ unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
   labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;unemployment rate&#39;)+
    theme(panel.background = element_rect(fill = &quot;#FFFFE0&quot;))
 grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = &#39;Texas election vote proportion and unemployment rate&#39;)</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="pennsylvania" class="section level2">
 <h2>Pennsylvania</h2>
@@ -538,7 +515,7 @@ unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
   labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;unemployment rate&#39;)+
    theme(panel.background = element_rect(fill = &quot;#F5F5F5&quot;))
 grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = &#39;Pennsylvania election vote proportion and unemployment rate&#39;)</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="california" class="section level2">
 <h2>California</h2>
@@ -559,7 +536,7 @@ unemployment_rate=ggplot()+geom_sf(data=us_states, fill=NA)+
   labs(x = &#39;&#39;, y = &#39;&#39;, fill = &#39;unemployment rate&#39;)+
    theme(panel.background = element_rect(fill = &quot;#F0FFFF&quot;))
 grid.arrange(propotion_vote,unemployment_rate, nrow=2,ncol=1,top = &#39;California election vote proportion and unemployment rate&#39;)</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 </div>
 
